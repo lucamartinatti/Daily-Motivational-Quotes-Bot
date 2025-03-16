@@ -8,8 +8,6 @@ from src.commands import start_command
 from src.constants import MENU, BOT_USERNAME, dict_categories
 from src.db_tools import (
     fetch_user_category,
-    fetch_scheduled_chats,
-    fetch_all_data,
     update_user_category,
 )
 from src.logic import quote_for_specific_user
@@ -21,10 +19,6 @@ def handle_response(text: str, chat_id: int) -> None:
     formatted_text = text.lower()
     if "quote" in formatted_text:
         return quote_for_specific_user(chat_id)
-    elif "debug" in formatted_text:  # TODO remove this line
-        fetch_all_data()
-        rows = fetch_scheduled_chats()
-        print(rows)
     else:
         return "I don't understand what you want to say, please try again."
 
@@ -49,19 +43,23 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     text = update.message.text
 
     print(
-        f"User: {update.message.chat.id} - Received message: {text} - Message type: {message_type}"
+        f"User: {update.message.chat.first_name} - Received message: {text} - Message type: {message_type}"
     )
 
-    if message_type == "group":
-        if BOT_USERNAME in text:
-            new_text = text.replace(BOT_USERNAME, "").strip()
-            response = handle_response(new_text, update.message.chat.id)
-        else:
-            return
-    else:
-        response = handle_response(text, update.message.chat.id)
+    # if message_type == "group":
+    #     if BOT_USERNAME in text:
+    #         new_text = text.replace(BOT_USERNAME, "").strip()
+    #         response = handle_response(new_text, update.message.chat.id)
+    #     else:
+    #         return
+    # else:
+    #     response = handle_response(text, update.message.chat.id)
 
-    print(f"Bot response: {response}")
+    # print(f"Bot response: {response}")
+
+    response = (
+        "I'm learning how to respond to messages. For now use the command in the Menu."
+    )
 
     await update.message.reply_text(response)
 

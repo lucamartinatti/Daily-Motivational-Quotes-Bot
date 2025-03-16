@@ -36,7 +36,7 @@ def insert_user_data(chat):
                     chat.full_name,
                     chat.username,
                     chat.link,
-                    "none",
+                    "all",
                     True,
                 ),
             )

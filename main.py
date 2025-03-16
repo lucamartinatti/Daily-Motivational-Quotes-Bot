@@ -7,7 +7,16 @@ from telegram.ext import (
     filters,
 )
 
-from src.constants import TOKEN, MENU, OPTION1, OPTION2, OPTION3, OPTION4, OPTION5
+from src.constants import (
+    TOKEN,
+    MENU,
+    OPTION1,
+    OPTION2,
+    OPTION3,
+    OPTION4,
+    OPTION5,
+    OPTION6,
+)
 from src.commands import (
     start_command,
     button,
@@ -44,16 +53,19 @@ def main():
         states={
             MENU: [
                 CallbackQueryHandler(button),
-                MessageHandler(filters.TEXT, handle_message),
+                # MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message),
             ],
-            OPTION1: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
             OPTION1: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
             OPTION2: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
             OPTION3: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
             OPTION4: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
             OPTION5: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
+            OPTION6: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
         },
-        fallbacks=[MessageHandler(filters.ALL, handle_fallback)],
+        fallbacks=[
+            CommandHandler("start", start_command),
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_fallback),
+        ],
     )
     app.add_handler(conv_handler)
 

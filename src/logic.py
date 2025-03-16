@@ -31,4 +31,4 @@ def get_quote(category: str | None = None) -> str:
     if author == "Unknown" or pd.isnull(author) or author == "":
         author = "Unknown"
 
-    return f'"{quote}" - {author}'
+    return f'"{quote}" \n\n{author}'

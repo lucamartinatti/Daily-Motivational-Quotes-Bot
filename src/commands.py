@@ -7,13 +7,12 @@ from telegram.ext import (
     ConversationHandler,
 )
 
-from src.constants import MENU, OPTION1, OPTION2, OPTION3, OPTION4, OPTION5
+from src.constants import MENU, OPTION1, OPTION2, OPTION3, OPTION4, OPTION5, OPTION6
 from src.logic import get_quote, quote_for_specific_user
 from src.db_tools import (
     fetch_scheduled_chats,
     insert_user_data,
     update_user_category,
-    fetch_all_data,
 )
 
 
@@ -25,10 +24,11 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         [InlineKeyboardButton("Stoic", callback_data="stoic")],
         [InlineKeyboardButton("Life", callback_data="life")],
         [InlineKeyboardButton("Love", callback_data="love")],
+        [InlineKeyboardButton("All", callback_data="all")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        "Hello! I am a bot that sends you daily motivational quotes.",
+        "Hello! Which category interests you most?",
         reply_markup=reply_markup,
     )
     return MENU
@@ -40,27 +40,45 @@ async def button(update: Update, context: CallbackContext) -> int:
 
     option = MENU
     if query.data == "motivation":
-        await query.edit_message_text(text="You will receive motivational quotes.")
+        await query.edit_message_text(
+            text="You will receive motivational quotes on a daily basis."
+        )
         option = OPTION1
     elif query.data == "philosophy":
-        await query.edit_message_text(text="You will receive philosophical quotes.")
+        await query.edit_message_text(
+            text="You will receive philosophical quotes on a daily basis."
+        )
         option = OPTION2
     elif query.data == "stoic":
-        await query.edit_message_text(text="You will receive stoic quotes.")
+        await query.edit_message_text(
+            text="You will receive stoic quotes on a daily basis."
+        )
         option = OPTION3
     elif query.data == "life":
-        await query.edit_message_text(text="You will receive life related quote.")
+        await query.edit_message_text(
+            text="You will receive life related quote on a daily basis."
+        )
         option = OPTION4
     elif query.data == "love":
-        await query.edit_message_text(text="You will receive love related quote.")
+        await query.edit_message_text(
+            text="You will receive love related quote on a daily basis."
+        )
         option = OPTION5
+    elif query.data == "all":
+        await query.edit_message_text(
+            text="You will receive quotes from all categories on a daily basis."
+        )
+        option = OPTION6
     else:
         await query.edit_message_text(text="Unknown option selected.")
         return MENU
 
+    # Update user category
     update_user_category(context._chat_id, query.data)
-    print(f"User {context._chat_id} selected category: {query.data}")
-    fetch_all_data()
+
+    # Send first quote
+    quote = quote_for_specific_user(context._chat_id)
+    await context.bot.send_message(chat_id=context._chat_id, text=quote)
     return option
 
 
