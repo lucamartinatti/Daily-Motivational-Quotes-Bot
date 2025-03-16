@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 
-from src.db_tools import fetch_user_category, fetch_scheduled_chats, fetch_all_data
+from src.db_tools import fetch_user_category
 
 
 def quote_for_specific_user(chat_id: int) -> str:

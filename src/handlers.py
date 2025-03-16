@@ -6,11 +6,18 @@ from telegram.ext import (
 
 from src.commands import start_command
 from src.constants import MENU, BOT_USERNAME, dict_categories
-from src.db_tools import fetch_user_category, update_user_category
-from src.logic import quote_for_specific_user, fetch_scheduled_chats, fetch_all_data
+from src.db_tools import (
+    fetch_user_category,
+    fetch_scheduled_chats,
+    fetch_all_data,
+    update_user_category,
+)
+from src.logic import quote_for_specific_user
 
 
 def handle_response(text: str, chat_id: int) -> None:
+    """Handle user response"""
+
     formatted_text = text.lower()
     if "quote" in formatted_text:
         return quote_for_specific_user(chat_id)
@@ -23,7 +30,7 @@ def handle_response(text: str, chat_id: int) -> None:
 
 
 async def handle_fallback(update: Update, context: CallbackContext) -> int:
-    # Check if user exists in the database
+    """Handle fallback messages"""
 
     category = fetch_user_category(update.message.chat.id)
     if category:
@@ -36,6 +43,8 @@ async def handle_fallback(update: Update, context: CallbackContext) -> int:
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle messages from users"""
+
     message_type = update.message.chat.type
     text = update.message.text
 

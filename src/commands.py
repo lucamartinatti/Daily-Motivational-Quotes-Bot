@@ -40,19 +40,19 @@ async def button(update: Update, context: CallbackContext) -> int:
 
     option = MENU
     if query.data == "motivation":
-        await query.edit_message_text(text="You will Motivational quotes.")
+        await query.edit_message_text(text="You will receive motivational quotes.")
         option = OPTION1
     elif query.data == "philosophy":
-        await query.edit_message_text(text="You will receive Philosophical quotes.")
+        await query.edit_message_text(text="You will receive philosophical quotes.")
         option = OPTION2
     elif query.data == "stoic":
-        await query.edit_message_text(text="You will receive Stoic quotes.")
+        await query.edit_message_text(text="You will receive stoic quotes.")
         option = OPTION3
     elif query.data == "life":
-        await query.edit_message_text(text="You will receive Life related quotes.")
+        await query.edit_message_text(text="You will receive life related quote.")
         option = OPTION4
     elif query.data == "love":
-        await query.edit_message_text(text="You will receive Love related quotes.")
+        await query.edit_message_text(text="You will receive love related quote.")
         option = OPTION5
     else:
         await query.edit_message_text(text="Unknown option selected.")
@@ -72,7 +72,7 @@ async def cancel(update: Update, context: CallbackContext) -> int:
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
         "You can use the following commands:\n"
-        "/start - Start the bot or select a new category\n"
+        "/start - Start the bot or select the desired category\n"
         "/help - Get help\n"
         "/quote - Get a motivational quote"
     )
