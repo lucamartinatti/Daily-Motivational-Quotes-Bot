@@ -10,8 +10,10 @@ from telegram.ext import (
 from src.constants import MENU, OPTION1, OPTION2, OPTION3, OPTION4, OPTION5
 from src.logic import get_quote, quote_for_specific_user
 from src.db_tools import (
-    get_scheduled_chat,
+    fetch_scheduled_chats,
     insert_user_data,
+    update_user_category,
+    fetch_all_data,
 )
 
 
@@ -36,24 +38,30 @@ async def button(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     await query.answer()
 
+    option = MENU
     if query.data == "motivation":
         await query.edit_message_text(text="You will Motivational quotes.")
-        return OPTION1
+        option = OPTION1
     elif query.data == "philosophy":
         await query.edit_message_text(text="You will receive Philosophical quotes.")
-        return OPTION2
+        option = OPTION2
     elif query.data == "stoic":
         await query.edit_message_text(text="You will receive Stoic quotes.")
-        return OPTION3
+        option = OPTION3
     elif query.data == "life":
         await query.edit_message_text(text="You will receive Life related quotes.")
-        return OPTION4
+        option = OPTION4
     elif query.data == "love":
         await query.edit_message_text(text="You will receive Love related quotes.")
-        return OPTION5
+        option = OPTION5
     else:
         await query.edit_message_text(text="Unknown option selected.")
         return MENU
+
+    update_user_category(context._chat_id, query.data)
+    print(f"User {context._chat_id} selected category: {query.data}")
+    fetch_all_data()
+    return option
 
 
 async def cancel(update: Update, context: CallbackContext) -> int:
@@ -85,7 +93,7 @@ async def send_daily_quote(context: CallbackContext) -> None:
 # Function to schedule the daily quote job
 def schedule_daily_quote(app: Application) -> None:
     """Schedule the daily quote job."""
-    for user_data in get_scheduled_chat():
+    for user_data in fetch_scheduled_chats():
         app.job_queue.run_daily(
             send_daily_quote,  # Function to send the quote
             data=user_data,  # Data to pass to the function

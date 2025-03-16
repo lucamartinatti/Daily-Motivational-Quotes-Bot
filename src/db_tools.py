@@ -46,6 +46,19 @@ def insert_user_data(chat):
         print(f"An error occurred: {e}")
 
 
+def update_user_category(chat_id, category):
+    try:
+        with sqlite3.connect("./database/test.db") as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                "UPDATE userdata SET category = ? WHERE id = ?", (category, chat_id)
+            )
+            connection.commit()
+        print("Category updated successfully")
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+
+
 def fetch_all_data():
     try:
         with sqlite3.connect("./database/test.db") as connection:
@@ -58,7 +71,7 @@ def fetch_all_data():
         print(f"An error occurred: {e}")
 
 
-def get_scheduled_chat():
+def fetch_scheduled_chats():
     try:
         with sqlite3.connect("./database/test.db") as connection:
             cursor = connection.cursor()
@@ -70,7 +83,7 @@ def get_scheduled_chat():
         return []
 
 
-def get_user_category(chat_id):
+def fetch_user_category(chat_id):
     try:
         with sqlite3.connect("./database/test.db") as connection:
             cursor = connection.cursor()

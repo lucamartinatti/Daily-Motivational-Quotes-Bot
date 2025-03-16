@@ -42,7 +42,7 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[
             CommandHandler("start", start_command),
-            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_fallback),
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message),
         ],
         states={
             MENU: [

@@ -1,23 +1,11 @@
 import pandas as pd
 import random
 
-from src.db_tools import get_user_category, get_scheduled_chat, fetch_all_data
-
-
-def handle_response(text: str, chat_id: int) -> None:
-    formatted_text = text.lower()
-    if "quote" in formatted_text:
-        return quote_for_specific_user(chat_id)
-    elif "debug" in formatted_text:  # TODO remove this line
-        fetch_all_data()
-        rows = get_scheduled_chat()
-        print(rows)
-    else:
-        return "I don't understand what you want to say, please try again."
+from src.db_tools import fetch_user_category, fetch_scheduled_chats, fetch_all_data
 
 
 def quote_for_specific_user(chat_id: int) -> str:
-    category = get_user_category(chat_id)
+    category = fetch_user_category(chat_id)
     quote = get_quote(category)
     return quote
 

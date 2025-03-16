@@ -4,21 +4,34 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from src.constants import MENU, BOT_USERNAME
-from src.db_tools import get_user_category
-from src.logic import handle_response
+from src.commands import start_command
+from src.constants import MENU, BOT_USERNAME, dict_categories
+from src.db_tools import fetch_user_category, update_user_category
+from src.logic import quote_for_specific_user, fetch_scheduled_chats, fetch_all_data
+
+
+def handle_response(text: str, chat_id: int) -> None:
+    formatted_text = text.lower()
+    if "quote" in formatted_text:
+        return quote_for_specific_user(chat_id)
+    elif "debug" in formatted_text:  # TODO remove this line
+        fetch_all_data()
+        rows = fetch_scheduled_chats()
+        print(rows)
+    else:
+        return "I don't understand what you want to say, please try again."
 
 
 async def handle_fallback(update: Update, context: CallbackContext) -> int:
     # Check if user exists in the database
 
-    if get_user_category(update.message.chat.id):
-        current_state = context.user_data["state"]
-        await update.message.reply_text(f"Resuming from state: {current_state}")
-        return current_state
+    category = fetch_user_category(update.message.chat.id)
+    if category:
+        update_user_category(update.message.chat.id, category)
+        return dict_categories[category] if category in dict_categories else MENU
     else:
         # If no state, initialize conversation
-        await update.message.reply_text("Welcome back! Please choose an option.")
+        await start_command(update, context)
         return MENU
 
 
